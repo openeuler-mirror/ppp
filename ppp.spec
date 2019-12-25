@@ -1,6 +1,6 @@
 Name:           ppp
 Version:        2.4.7
-Release:        27
+Release:        28
 Summary:        The Point-to-Point Protocol
 
 License:        BSD and LGPLv2+ and GPLv2+ and Public Domain
@@ -58,6 +58,7 @@ Patch0028:      0028-pppoe-include-netinet-in.h-before-linux-in.h.patch
 
 Patch0029:      ppp-2.4.7-DES-openssl.patch
 Patch0030:      ppp-2.4.7-honor-ldflags.patch
+Patch6000:      ppp-CVE-2015-3310.patch
 
 %description
 The Point-to-Point Protocol (PPP) provides a standard way to establish
@@ -150,5 +151,12 @@ install -m 644 -p %{SOURCE12} %{buildroot}%{_prefix}/lib/tmpfiles.d/ppp.conf
 %{_mandir}/man8/*.8.gz
 
 %changelog
+* Fri Dec 20 2019 openEuler Buildteam <buildteam@openeuler.org> - 2.4.7-28
+- Type:cves
+- ID:CVE-2015-3310
+- SUG:restart
+- DESC:fix CVE-2015-3310
+
 * Sun Sep 15 2019 openEuler Buildteam <buildteam@openeuler.org> - 2.4.7-27
 - Package Init
+
