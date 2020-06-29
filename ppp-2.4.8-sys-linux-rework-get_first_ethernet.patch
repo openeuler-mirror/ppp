@@ -68,12 +68,12 @@ index 9918091..b949716 100644
  all: rp-pppoe.so pppoe-discovery
  
 -pppoe-discovery: pppoe-discovery.o debug.o
--	$(CC) -o pppoe-discovery pppoe-discovery.o debug.o
+-	$(CC) $(LDFLAGS) -o pppoe-discovery pppoe-discovery.o debug.o
 +pppoe-discovery: pppoe-discovery.o debug.o common.o
-+	$(CC) -o pppoe-discovery pppoe-discovery.o debug.o -ludev
++	$(CC) $(LDFLAGS) -o pppoe-discovery pppoe-discovery.o debug.o -ludev
  
  pppoe-discovery.o: pppoe-discovery.c
- 	$(CC) $(CFLAGS) -c -o pppoe-discovery.o pppoe-discovery.c
+ 	$(CC) $(CFLAGS) -I../../.. -c -o pppoe-discovery.o pppoe-discovery.c
 diff --git a/pppd/plugins/rp-pppoe/pppoe-discovery.c b/pppd/plugins/rp-pppoe/pppoe-discovery.c
 index c0d927d..2bd910f 100644
 --- a/pppd/plugins/rp-pppoe/pppoe-discovery.c
@@ -111,7 +111,7 @@ index c0d927d..2bd910f 100644
      conn->discoverySocket = -1;
      conn->sessionSocket = -1;
 @@ -722,3 +734,104 @@ void usage(void)
-     fprintf(stderr, "Usage: pppoe-discovery [options]\n");
+ 	    "   -h             -- Print usage information.\n");
      fprintf(stderr, "\nVersion " RP_VERSION "\n");
  }
 +
