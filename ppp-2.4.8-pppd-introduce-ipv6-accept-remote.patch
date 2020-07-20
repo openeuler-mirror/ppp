@@ -19,8 +19,8 @@ index caa2b26..5a56c95 100644
 +    { "ipv6cp-accept-remote", o_bool, &ipv6cp_allowoptions[0].accept_remote,
 +      "Accept peer's interface identifier for itself", 1 },
  
-     { "ipv6cp-use-ipaddr", o_bool, &ipv6cp_allowoptions[0].use_ip,
-       "Use (default) IPv4 address as interface identifier", 1 },
+     { "defaultroute6", o_bool, &ipv6cp_wantoptions[0].default_route,
+       "Add default IPv6 route", OPT_ENABLE|1, &ipv6cp_allowoptions[0].default_route },
 @@ -437,6 +439,7 @@ ipv6cp_init(unit)
      memset(ao, 0, sizeof(*ao));
  
@@ -43,9 +43,9 @@ index cc4568d..8c7552e 100644
 --- a/pppd/ipv6cp.h
 +++ b/pppd/ipv6cp.h
 @@ -150,7 +150,8 @@
- typedef struct ipv6cp_options {
      int neg_ifaceid;		/* Negotiate interface identifier? */
      int req_ifaceid;		/* Ask peer to send interface identifier? */
+     int default_route;		/* Assign default route through interface? */
 -    int accept_local;		/* accept peer's value for iface id? */
 +    int accept_local;		/* accept peer's value for our iface id? */
 +    int accept_remote;		/* accept peer's value for his iface id? */
