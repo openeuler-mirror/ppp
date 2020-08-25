@@ -40,7 +40,7 @@ index 5a44d30..63872eb 100644
 -LIBS =
 +COPTS = -Wall $(RPM_OPT_FLAGS)
  
- # Uncomment the next 2 lines to include support for Microsoft's
+ # Uncomment the next line to include support for Microsoft's
  # MS-CHAP authentication protocol.  Also, edit plugins/radius/Makefile.linux.
 diff --git a/pppd/plugins/Makefile.linux b/pppd/plugins/Makefile.linux
 index 0a7ec7b..e09a369 100644
@@ -51,7 +51,7 @@ index 0a7ec7b..e09a369 100644
 -COPTS	= -O2 -g
 +COPTS	= $(RPM_OPT_FLAGS)
  CFLAGS	= $(COPTS) -I.. -I../../include -fPIC
- LDFLAGS	= -shared
+ LDFLAGS_SHARED	= -shared
  INSTALL	= install
 diff --git a/pppd/plugins/pppoatm/Makefile.linux b/pppd/plugins/pppoatm/Makefile.linux
 index 20f62e6..5a81447 100644
@@ -62,7 +62,7 @@ index 20f62e6..5a81447 100644
 -COPTS	= -O2 -g
 +COPTS	= $(RPM_OPT_FLAGS)
  CFLAGS	= $(COPTS) -I../.. -I../../../include -fPIC
- LDFLAGS	= -shared
+ LDFLAGS_SHARED	= -shared
  INSTALL	= install
 diff --git a/pppd/plugins/radius/Makefile.linux b/pppd/plugins/radius/Makefile.linux
 index 24ed3e5..45b3b8d 100644

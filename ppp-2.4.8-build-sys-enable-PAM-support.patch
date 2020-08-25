@@ -11,8 +11,8 @@ diff --git a/pppd/Makefile.linux b/pppd/Makefile.linux
 index 1d9ea78..5a44d30 100644
 --- a/pppd/Makefile.linux
 +++ b/pppd/Makefile.linux
-@@ -61,7 +61,7 @@ HAVE_MULTILINK=y
- USE_TDB=y
+@@ -66,7 +66,7 @@ HAVE_MULTILINK=y
+ #SYSTEMD=y
  
  HAS_SHADOW=y
 -#USE_PAM=y
