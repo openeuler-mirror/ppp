@@ -1,7 +1,7 @@
-diff -Naur ppp-2.4.7/README.eap-tls ppp-2.4.7-eaptls-mppe-1.101b/README.eap-tls
+diff -Naur ppp-2.4.7/README.eap-tls ppp-2.4.7-eaptls-mppe-1.102/README.eap-tls
 --- ppp-2.4.7/README.eap-tls	1970-01-01 01:00:00.000000000 +0100
-+++ ppp-2.4.7-eaptls-mppe-1.101b/README.eap-tls	2018-06-02 01:42:04.021165440 +0200
-@@ -0,0 +1,286 @@
++++ ppp-2.4.7-eaptls-mppe-1.102/README.eap-tls	2018-11-02 17:14:08.101636586 +0100
+@@ -0,0 +1,291 @@
 +EAP-TLS authentication support for PPP
 +======================================
 +
@@ -11,7 +11,7 @@ diff -Naur ppp-2.4.7/README.eap-tls ppp-2.4.7-eaptls-mppe-1.101b/README.eap-tls
 +    security protocol that can be used with PPP.  It provides a means
 +    to plug in multiple optional authentication methods.
 +
-+    Transport Level Security (TLS; RFC 2246) provides for mutual 
++    Transport Level Security (TLS; RFC 5216) provides for mutual 
 +    authentication, integrity-protected ciphersuite negotiation and 
 +    key exchange between two endpoints.  It also provides for optional
 +    MPPE encryption.
@@ -282,15 +282,20 @@ diff -Naur ppp-2.4.7/README.eap-tls ppp-2.4.7-eaptls-mppe-1.101b/README.eap-tls
 + - Change SSL_OP_NO_TICKETS to SSL_OP_NO_TICKET
 + - Fix bug in initialisation code with fragmented packets.
 +v0.998   (13-Mar-2015)
-+ - Added fix for https://bugzilla.redhat.com/show_bug.cgi?id=1023620
++ - Add fix for https://bugzilla.redhat.com/show_bug.cgi?id=1023620
 +v0.999   (11-May-2017)
-+ - Added support for OpenSSL 1.1: the code will now compile against OpenSSL 1.0.x or 1.1.x.
++ - Add support for OpenSSL 1.1: the code will now compile against OpenSSL 1.0.x or 1.1.x.
 +v1.101 (1-Jun-2018)
 + - Fix vulnerabilities CVE-2018-11574.
-+
-diff -Naur ppp-2.4.7/etc.ppp/eaptls-client ppp-2.4.7-eaptls-mppe-1.101b/etc.ppp/eaptls-client
++v1.102 (2-Nov-2018)
++ - Add TLS 1.2 support. Windows 7/8 will connect using TLS 1.0, Windows 10 clients using TLS 1.2.
++   This works both when compiling against OpenSSL 1.0.1+ and 1.1+.
++ - Print warning when certificate is either not yet valid or has expired.
++ - Perform better peer certificate checks.
++ - Allow certificate chain files to be used.
+diff -Naur ppp-2.4.7/etc.ppp/eaptls-client ppp-2.4.7-eaptls-mppe-1.102/etc.ppp/eaptls-client
 --- ppp-2.4.7/etc.ppp/eaptls-client	1970-01-01 01:00:00.000000000 +0100
-+++ ppp-2.4.7-eaptls-mppe-1.101b/etc.ppp/eaptls-client	2018-06-02 01:42:04.021165440 +0200
++++ ppp-2.4.7-eaptls-mppe-1.102/etc.ppp/eaptls-client	2018-10-30 16:47:59.527263750 +0100
 @@ -0,0 +1,10 @@
 +# Parameters for authentication using EAP-TLS (client)
 +
@@ -302,9 +307,9 @@ diff -Naur ppp-2.4.7/etc.ppp/eaptls-client ppp-2.4.7-eaptls-mppe-1.101b/etc.ppp/
 +# client private key file (required)
 +
 +#client	server	/root/cert/client.crt	-	/root/cert/ca.crt	/root/cert/client.key
-diff -Naur ppp-2.4.7/etc.ppp/eaptls-server ppp-2.4.7-eaptls-mppe-1.101b/etc.ppp/eaptls-server
+diff -Naur ppp-2.4.7/etc.ppp/eaptls-server ppp-2.4.7-eaptls-mppe-1.102/etc.ppp/eaptls-server
 --- ppp-2.4.7/etc.ppp/eaptls-server	1970-01-01 01:00:00.000000000 +0100
-+++ ppp-2.4.7-eaptls-mppe-1.101b/etc.ppp/eaptls-server	2018-06-02 01:42:04.021165440 +0200
++++ ppp-2.4.7-eaptls-mppe-1.102/etc.ppp/eaptls-server	2018-10-30 16:47:59.527263750 +0100
 @@ -0,0 +1,11 @@
 +# Parameters for authentication using EAP-TLS (server)
 +
@@ -317,9 +322,9 @@ diff -Naur ppp-2.4.7/etc.ppp/eaptls-server ppp-2.4.7-eaptls-mppe-1.101b/etc.ppp/
 +# allowed addresses (required, can be *)
 +
 +#client	server	-	/root/cert/server.crt	/root/cert/ca.crt	/root/cert/server.key	192.168.1.0/24
-diff -Naur ppp-2.4.7/etc.ppp/openssl.cnf ppp-2.4.7-eaptls-mppe-1.101b/etc.ppp/openssl.cnf
+diff -Naur ppp-2.4.7/etc.ppp/openssl.cnf ppp-2.4.7-eaptls-mppe-1.102/etc.ppp/openssl.cnf
 --- ppp-2.4.7/etc.ppp/openssl.cnf	1970-01-01 01:00:00.000000000 +0100
-+++ ppp-2.4.7-eaptls-mppe-1.101b/etc.ppp/openssl.cnf	2018-06-02 01:42:04.021165440 +0200
++++ ppp-2.4.7-eaptls-mppe-1.102/etc.ppp/openssl.cnf	2018-10-30 16:47:59.527263750 +0100
 @@ -0,0 +1,14 @@
 +openssl_conf = openssl_def
 +
@@ -335,9 +340,9 @@ diff -Naur ppp-2.4.7/etc.ppp/openssl.cnf ppp-2.4.7-eaptls-mppe-1.101b/etc.ppp/op
 +MODULE_PATH = /usr/lib64/libeTPkcs11.so
 +init = 0
 +
-diff -Naur ppp-2.4.7/linux/Makefile.top ppp-2.4.7-eaptls-mppe-1.101b/linux/Makefile.top
+diff -Naur ppp-2.4.7/linux/Makefile.top ppp-2.4.7-eaptls-mppe-1.102/linux/Makefile.top
 --- ppp-2.4.7/linux/Makefile.top	2014-08-09 14:31:39.000000000 +0200
-+++ ppp-2.4.7-eaptls-mppe-1.101b/linux/Makefile.top	2018-06-02 01:42:04.021165440 +0200
++++ ppp-2.4.7-eaptls-mppe-1.102/linux/Makefile.top	2018-10-30 16:47:59.528263707 +0100
 @@ -26,7 +26,7 @@
  	cd pppdump; $(MAKE) $(MFLAGS) install
  
@@ -358,9 +363,9 @@ diff -Naur ppp-2.4.7/linux/Makefile.top ppp-2.4.7-eaptls-mppe-1.101b/linux/Makef
  
  $(BINDIR):
  	$(INSTALL) -d -m 755 $@
-diff -Naur ppp-2.4.7/pppd/Makefile.linux ppp-2.4.7-eaptls-mppe-1.101b/pppd/Makefile.linux
+diff -Naur ppp-2.4.7/pppd/Makefile.linux ppp-2.4.7-eaptls-mppe-1.102/pppd/Makefile.linux
 --- ppp-2.4.7/pppd/Makefile.linux	2014-08-09 14:31:39.000000000 +0200
-+++ ppp-2.4.7-eaptls-mppe-1.101b/pppd/Makefile.linux	2018-06-02 01:42:04.021165440 +0200
++++ ppp-2.4.7-eaptls-mppe-1.102/pppd/Makefile.linux	2018-10-30 16:47:59.528263707 +0100
 @@ -76,6 +76,9 @@
  # Use libutil
  USE_LIBUTIL=y
@@ -387,9 +392,9 @@ diff -Naur ppp-2.4.7/pppd/Makefile.linux ppp-2.4.7-eaptls-mppe-1.101b/pppd/Makef
  ifdef HAS_SHADOW
  CFLAGS   += -DHAS_SHADOW
  #LIBS     += -lshadow $(LIBS)
-diff -Naur ppp-2.4.7/pppd/auth.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/auth.c
+diff -Naur ppp-2.4.7/pppd/auth.c ppp-2.4.7-eaptls-mppe-1.102/pppd/auth.c
 --- ppp-2.4.7/pppd/auth.c	2014-08-09 14:31:39.000000000 +0200
-+++ ppp-2.4.7-eaptls-mppe-1.101b/pppd/auth.c	2018-06-02 01:42:04.022165436 +0200
++++ ppp-2.4.7-eaptls-mppe-1.102/pppd/auth.c	2018-10-30 16:47:59.530263608 +0100
 @@ -109,6 +109,9 @@
  #include "upap.h"
  #include "chap-new.h"
@@ -885,9 +890,9 @@ diff -Naur ppp-2.4.7/pppd/auth.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/auth.c
 +}
 +#endif
 +
-diff -Naur ppp-2.4.7/pppd/ccp.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/ccp.c
+diff -Naur ppp-2.4.7/pppd/ccp.c ppp-2.4.7-eaptls-mppe-1.102/pppd/ccp.c
 --- ppp-2.4.7/pppd/ccp.c	2014-08-09 14:31:39.000000000 +0200
-+++ ppp-2.4.7-eaptls-mppe-1.101b/pppd/ccp.c	2018-06-02 01:42:04.022165436 +0200
++++ ppp-2.4.7-eaptls-mppe-1.102/pppd/ccp.c	2018-10-30 16:47:59.531263554 +0100
 @@ -540,6 +540,9 @@
      if (go->mppe) {
  	ccp_options *ao = &ccp_allowoptions[f->unit];
@@ -923,9 +928,9 @@ diff -Naur ppp-2.4.7/pppd/ccp.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/ccp.c
  	    lcp_close(f->unit, "MPPE required but not available");
  	    return;
  	}
-diff -Naur ppp-2.4.7/pppd/chap-md5.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/chap-md5.c
+diff -Naur ppp-2.4.7/pppd/chap-md5.c ppp-2.4.7-eaptls-mppe-1.102/pppd/chap-md5.c
 --- ppp-2.4.7/pppd/chap-md5.c	2014-08-09 14:31:39.000000000 +0200
-+++ ppp-2.4.7-eaptls-mppe-1.101b/pppd/chap-md5.c	2018-06-02 01:42:04.022165436 +0200
++++ ppp-2.4.7-eaptls-mppe-1.102/pppd/chap-md5.c	2018-10-30 16:47:59.532263499 +0100
 @@ -36,7 +36,11 @@
  #include "chap-new.h"
  #include "chap-md5.h"
@@ -938,12 +943,11 @@ diff -Naur ppp-2.4.7/pppd/chap-md5.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/chap-md5.
  
  #define MD5_HASH_SIZE		16
  #define MD5_MIN_CHALLENGE	16
-diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
+diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.102/pppd/eap-tls.c
 --- ppp-2.4.7/pppd/eap-tls.c	1970-01-01 01:00:00.000000000 +0100
-+++ ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c	2018-06-02 01:42:16.790124406 +0200
-@@ -0,0 +1,1313 @@
-+/*
-+ * eap-tls.c - EAP-TLS implementation for PPP
++++ ppp-2.4.7-eaptls-mppe-1.102/pppd/eap-tls.c	2018-11-02 16:53:05.996742547 +0100
+@@ -0,0 +1,1383 @@
++/* * eap-tls.c - EAP-TLS implementation for PPP
 + *
 + * Copyright (c) Beniamino Galvani 2005 All rights reserved.
 + *
@@ -999,13 +1003,19 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +
 +#ifdef MPPE
 +
-+#if OPENSSL_VERSION_NUMBER < 0x10100000L
++#define EAPTLS_MPPE_KEY_LEN     32
++
++/*
++ * The following stuff is only needed if SSL_export_keying_material() is not available
++ */
++
++#if OPENSSL_VERSION_NUMBER < 0x10001000L
 +
 +/*
 + * https://wiki.openssl.org/index.php/1.1_API_Changes
 + * tries to provide some guidance but ultimately falls short.
++ *
 + */
-+
 +
 +static void HMAC_CTX_free(HMAC_CTX *ctx)
 +{
@@ -1022,11 +1032,6 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +		HMAC_CTX_init(ctx);
 +	return ctx;
 +}
-+
-+/*
-+ * These were basically jacked directly from the OpenSSL tree
-+ * without adjustments.
-+ */
 +
 +static size_t SSL_get_client_random(const SSL *ssl, unsigned char *out,
 +				    size_t outlen)
@@ -1061,10 +1066,6 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +	return outlen;
 +}
 +
-+/* Avoid a deprecated warning in OpenSSL 1.1 whilst still allowing to build against 1.0.x */
-+#define TLS_method           TLSv1_method
-+
-+#endif /* OPENSSL_VERSION_NUMBER < 0x10100000L */
 +
 +/*
 + * TLS PRF from RFC 2246
@@ -1122,8 +1123,8 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +		const unsigned char *seed,   unsigned int seed_len,
 +		unsigned char *out, unsigned char *buf, unsigned int out_len)
 +{
-+        unsigned int i;
-+        unsigned int len = (secret_len + 1) / 2;
++	    unsigned int i;
++	    unsigned int len = (secret_len + 1) / 2;
 +	const unsigned char *s1 = secret;
 +	const unsigned char *s2 = secret + (secret_len - len);
 +
@@ -1135,57 +1136,88 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +	}
 +}
 +
-+#define EAPTLS_MPPE_KEY_LEN     32
++static int SSL_export_keying_material(SSL *s, unsigned char *out, size_t olen,
++                               const char *label, size_t llen,
++                               const unsigned char *p, size_t plen,
++                               int use_context)
++{
++	unsigned char seed[64 + 2*SSL3_RANDOM_SIZE];
++	unsigned char buf[4*EAPTLS_MPPE_KEY_LEN];
++	unsigned char master_key[SSL_MAX_MASTER_KEY_LENGTH];
++	size_t master_key_length;
++	unsigned char *pp;
++
++	pp = seed;
++
++	memcpy(pp, label, llen);
++	pp += llen;
++
++	llen += SSL_get_client_random(s, pp, SSL3_RANDOM_SIZE);
++	pp += SSL3_RANDOM_SIZE;
++
++	llen += SSL_get_server_random(s, pp, SSL3_RANDOM_SIZE);
++
++	master_key_length = SSL_SESSION_get_master_key(SSL_get_session(s), master_key,
++						   sizeof(master_key));
++	PRF(master_key, master_key_length, seed, llen, out, buf, olen);
++
++	return 1;
++}
++
++#endif /* OPENSSL_VERSION_NUMBER < 0x10001000L */
++
++
++/*
++ *  OpenSSL 1.1+ introduced a generic TLS_method()
++ *  For older releases we substitute the appropriate method
++ */
++
++#if OPENSSL_VERSION_NUMBER < 0x10100000L
++
++#define TLS_method SSLv23_method
++
++#define SSL3_RT_HEADER	0x100
++
++#endif /* OPENSSL_VERSION_NUMBER < 0x10100000L */
++
 +
 +/*
 + *  Generate keys according to RFC 2716 and add to reply
 + */
 +void eaptls_gen_mppe_keys(struct eaptls_session *ets, const char *prf_label,
-+                          int client)
++	                      int client)
 +{
-+    unsigned char out[4*EAPTLS_MPPE_KEY_LEN], buf[4*EAPTLS_MPPE_KEY_LEN];
-+    unsigned char seed[64 + 2*SSL3_RANDOM_SIZE];
-+    unsigned char *p = seed;
-+	SSL			  *s = ets->ssl;
-+    size_t prf_size;
-+    unsigned char master_key[SSL_MAX_MASTER_KEY_LENGTH];
-+    size_t master_key_length;
++	unsigned char  out[4*EAPTLS_MPPE_KEY_LEN];
++	size_t         prf_size = strlen(prf_label);
++	unsigned char *p;
 +
-+    prf_size = strlen(prf_label);
++	if (SSL_export_keying_material(ets->ssl, out, sizeof(out), prf_label, prf_size, NULL, 0, 0) != 1)
++	{
++	    warn( "EAP-TLS: Failed generating keying material" );
++	    return;
++	}   
 +
-+    memcpy(p, prf_label, prf_size);
-+    p += prf_size;
-+
-+    prf_size += SSL_get_client_random(s, p, SSL3_RANDOM_SIZE);
-+    p += SSL3_RANDOM_SIZE;
-+
-+    prf_size += SSL_get_server_random(s, p, SSL3_RANDOM_SIZE);
-+
-+    master_key_length = SSL_SESSION_get_master_key(SSL_get_session(s), master_key,
-+						   sizeof(master_key));
-+    PRF(master_key, master_key_length, seed, prf_size, out, buf, sizeof(out));
-+
-+    /* 
-+     * We now have the master send and receive keys.
-+     * From these, generate the session send and receive keys.
-+     * (see RFC3079 / draft-ietf-pppext-mppe-keys-03.txt for details)
-+     */
-+    if (client)
-+    {
++	/* 
++	 * We now have the master send and receive keys.
++	 * From these, generate the session send and receive keys.
++	 * (see RFC3079 / draft-ietf-pppext-mppe-keys-03.txt for details)
++	 */
++	if (client)
++	{
 +	    p = out;
 +		BCOPY( p, mppe_send_key, sizeof(mppe_send_key) );
 +		p += EAPTLS_MPPE_KEY_LEN;
-+    	BCOPY( p, mppe_recv_key, sizeof(mppe_recv_key) );
-+    }
-+    else
-+    {
-+	    p = out;
-+    	BCOPY( p, mppe_recv_key, sizeof(mppe_recv_key) );
++		BCOPY( p, mppe_recv_key, sizeof(mppe_recv_key) );
++	}
++	else
++	{
++		p = out;
++		BCOPY( p, mppe_recv_key, sizeof(mppe_recv_key) );
 +		p += EAPTLS_MPPE_KEY_LEN;
 +		BCOPY( p, mppe_send_key, sizeof(mppe_send_key) );
-+    }
++	}
 +
-+    mppe_keys_set = 1;
++	mppe_keys_set = 1;
 +}
 +
 +#endif
@@ -1194,7 +1226,7 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +{
 +	unsigned long ssl_err = ERR_get_error();
 +
-+    if (ssl_err != 0)
++	if (ssl_err != 0)
 +		dbglog("EAP-TLS SSL error stack:");
 +	while (ssl_err != 0) {
 +		dbglog( ERR_error_string( ssl_err, NULL ) );
@@ -1216,34 +1248,34 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +
 +CONF *eaptls_ssl_load_config( void )
 +{
-+    CONF        *config;
-+    int          ret_code;
-+    long         error_line = 33;
++	CONF        *config;
++	int          ret_code;
++	long         error_line = 33;
 +
-+    config = NCONF_new( NULL );
++	config = NCONF_new( NULL );
 +	dbglog( "Loading OpenSSL config file" );
-+    ret_code = NCONF_load( config, _PATH_OPENSSLCONFFILE, &error_line );
-+    if (ret_code == 0)
-+    {
-+        warn( "EAP-TLS: Error in OpenSSL config file %s at line %d", _PATH_OPENSSLCONFFILE, error_line );
-+        NCONF_free( config );
-+        config = NULL;
-+        ERR_clear_error();
-+    }
++	ret_code = NCONF_load( config, _PATH_OPENSSLCONFFILE, &error_line );
++	if (ret_code == 0)
++	{
++	    warn( "EAP-TLS: Error in OpenSSL config file %s at line %d", _PATH_OPENSSLCONFFILE, error_line );
++	    NCONF_free( config );
++	    config = NULL;
++	    ERR_clear_error();
++	}
 +
 +	dbglog( "Loading OpenSSL built-ins" );
-+    ENGINE_load_builtin_engines();
-+    OPENSSL_load_builtin_modules();
++	ENGINE_load_builtin_engines();
++	OPENSSL_load_builtin_modules();
 +   
 +	dbglog( "Loading OpenSSL configured modules" );
-+    if (CONF_modules_load( config, NULL, 0 ) <= 0 )
-+    {
-+        warn( "EAP-TLS: Error loading OpenSSL modules" );
++	if (CONF_modules_load( config, NULL, 0 ) <= 0 )
++	{
++	    warn( "EAP-TLS: Error loading OpenSSL modules" );
 +	    log_ssl_errors();
-+        config = NULL;
-+    }
++	    config = NULL;
++	}
 +
-+    return config;
++	return config;
 +}
 +
 +ENGINE *eaptls_ssl_load_engine( char *engine_name )
@@ -1255,7 +1287,7 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +
 +	dbglog( "Loading OpenSSL '%s' engine support", engine_name );
 +	e = ENGINE_by_id( engine_name );
-+    if (!e) 
++	if (!e) 
 +	{
 +		dbglog( "EAP-TLS: Cannot load '%s' engine support, trying 'dynamic'", engine_name );
 +		e = ENGINE_by_id( "dynamic" );
@@ -1276,7 +1308,7 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +		}
 +	}
 +
-+    if (e)
++	if (e)
 +	{
 +		dbglog( "Initialising engine" );
 +		if(!ENGINE_set_default(e, ENGINE_METHOD_ALL))
@@ -1288,7 +1320,7 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +		}
 +	}
 +
-+    return e;
++	return e;
 +}
 +
 +/*
@@ -1303,30 +1335,32 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +	char		*pkey_engine_name = NULL;
 +	char		*pkey_identifier = NULL;
 +	SSL_CTX		*ctx;
++	SSL			*ssl;
 +	X509_STORE	*certstore;
 +	X509_LOOKUP	*lookup;
 +	X509		*tmp;
++	int			ret;
 +
 +	/*
 +	 * Without these can't continue 
 +	 */
 +	if (!cacertfile[0])
-+    {
++	{
 +		error("EAP-TLS: CA certificate missing");
 +		return NULL;
-+    }
++	}
 +
 +	if (!certfile[0])
-+    {
++	{
 +		error("EAP-TLS: User certificate missing");
 +		return NULL;
-+    }
++	}
 +
 +	if (!privkeyfile[0])
-+    {
++	{
 +		error("EAP-TLS: User private key missing");
 +		return NULL;
-+    }
++	}
 +
 +	SSL_library_init();
 +	SSL_load_error_strings();
@@ -1422,7 +1456,7 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +		}
 +	}
 +
-+    SSL_CTX_set_default_passwd_cb (ctx, password_callback);
++	SSL_CTX_set_default_passwd_cb (ctx, password_callback);
 +
 +	if (!SSL_CTX_load_verify_locations(ctx, cacertfile, NULL))
 +	{
@@ -1430,7 +1464,7 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +		goto fail;
 +	}
 +
-+    if (init_server)
++	if (init_server)
 +		SSL_CTX_set_client_CA_list(ctx, SSL_load_client_CA_file(cacertfile));
 +
 +	if (cert_engine)
@@ -1468,12 +1502,40 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +	}
 +	else
 +	{
-+		if (!SSL_CTX_use_certificate_file(ctx, certfile, SSL_FILETYPE_PEM))
++		if (!SSL_CTX_use_certificate_chain_file(ctx, certfile))
 +		{
 +			error( "EAP-TLS: Cannot use public certificate %s", certfile );
 +			goto fail;
 +		}
 +	}
++
++
++	/*
++	 *  Check the Before and After dates of the certificate
++	 */
++	ssl = SSL_new(ctx);
++	tmp = SSL_get_certificate(ssl);
++
++	ret = X509_cmp_time(X509_get_notBefore(tmp), NULL);
++	if (ret == 0)
++	{    
++		warn( "EAP-TLS: Failed to read certificate notBefore field.");
++	}    
++	if (ret > 0) 
++	{    
++		warn( "EAP-TLS: Your certificate is not yet valid!");
++	}    
++
++	ret = X509_cmp_time(X509_get_notAfter(tmp), NULL);
++	if (ret == 0)
++	{    
++		warn( "EAP-TLS: Failed to read certificate notAfter field.");
++	}    
++	if (ret < 0)
++	{
++		warn( "EAP-TLS: Your certificate has expired!");
++	}
++	SSL_free(ssl);
 +
 +	if (pkey_engine)
 +	{
@@ -1517,9 +1579,10 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +    /* Explicitly set the NO_TICKETS flag to support Win7/Win8 clients */
 +	SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3
 +#ifdef SSL_OP_NO_TICKET
-+    | SSL_OP_NO_TICKET
++	| SSL_OP_NO_TICKET
 +#endif
-+);
++	);
++
 +	SSL_CTX_set_verify_depth(ctx, 5);
 +	SSL_CTX_set_verify(ctx,
 +			   SSL_VERIFY_PEER |
@@ -1543,33 +1606,33 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +		X509_STORE_set_flags(certstore, X509_V_FLAG_CRL_CHECK);
 +	}
 +
-+    if (crl_file) {
-+        FILE     *fp  = NULL;
-+        X509_CRL *crl = NULL;
++	if (crl_file) {
++	    FILE     *fp  = NULL;
++	    X509_CRL *crl = NULL;
 +
-+        fp = fopen(crl_file, "r");
-+        if (!fp) {
-+            error("EAP-TLS: Cannot open CRL file '%s'", crl_file);
-+            goto fail;
-+        }
++	    fp = fopen(crl_file, "r");
++	    if (!fp) {
++	        error("EAP-TLS: Cannot open CRL file '%s'", crl_file);
++	        goto fail;
++	    }
 +
-+        crl = PEM_read_X509_CRL(fp, NULL, NULL, NULL);
-+        if (!crl) {
-+            error("EAP-TLS: Cannot read CRL file '%s'", crl_file);
-+            goto fail;
-+        }
++	    crl = PEM_read_X509_CRL(fp, NULL, NULL, NULL);
++	    if (!crl) {
++	        error("EAP-TLS: Cannot read CRL file '%s'", crl_file);
++	        goto fail;
++	    }
 +
 +		if (!(certstore = SSL_CTX_get_cert_store(ctx))) {
 +			error("EAP-TLS: Failed to get certificate store");
 +			goto fail;
 +		}
-+        if (!X509_STORE_add_crl(certstore, crl)) {
-+            error("EAP-TLS: Cannot add CRL to certificate store");
-+            goto fail;
-+        }
++	    if (!X509_STORE_add_crl(certstore, crl)) {
++	        error("EAP-TLS: Cannot add CRL to certificate store");
++	        goto fail;
++	    }
 +		X509_STORE_set_flags(certstore, X509_V_FLAG_CRL_CHECK);
 +
-+    }
++	}
 +
 +	/*
 +	 * If a peer certificate file was specified, it must be valid, else fail 
@@ -1606,10 +1669,10 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +
 +	mtu = ho->neg_mru? ho->mru: PPP_MRU;
 +	mru = go->neg_mru? MAX(wo->mru, go->mru): PPP_MRU;
-+    mtu = MIN(MIN(mtu, mru), ao->mru)- PPP_HDRLEN - 10;
++	mtu = MIN(MIN(mtu, mru), ao->mru)- PPP_HDRLEN - 10;
 +
 +	dbglog("MTU = %d", mtu);
-+ 	return mtu;
++	return mtu;
 +}
 +
 +
@@ -1821,7 +1884,7 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +	GETCHAR(flags, inp);
 +	len--;
 +
-+    if (flags & EAP_TLS_FLAGS_LI && len >= 4) {
++	if (flags & EAP_TLS_FLAGS_LI && len > 4) {
 +		/*
 +		 * LenghtIncluded flag set -> this is the first packet of a message
 +		*/
@@ -1932,7 +1995,10 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +		 * Read from ssl 
 +		 */
 +		if ((res = BIO_read(ets->from_ssl, fromtls, 65536)) == -1)
-+			fatal("No data from BIO_read");
++		{
++			warn("EAP-TLS send: No data from BIO_read");
++			return 1;
++		}
 +
 +		ets->datalen = res;
 +
@@ -1945,7 +2011,7 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +	}
 +
 +	size = ets->datalen - ets->offset;
-+    
++	
 +	if (size > ets->mtu) {
 +		size = ets->mtu;
 +		ets->frag = 1;
@@ -2009,13 +2075,12 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 + * is done by ssl; we check the CN in the peer certificate 
 + * against the peer name.
 + */
-+int ssl_verify_callback(int preverify_ok, X509_STORE_CTX * ctx)
++int ssl_verify_callback(int ok, X509_STORE_CTX * ctx)
 +{
 +	char subject[256];
 +	char cn_str[256];
 +	X509 *peer_cert;
 +	int err, depth;
-+	int ok = preverify_ok;
 +	SSL *ssl;
 +	struct eaptls_session *ets;
 +
@@ -2025,7 +2090,7 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +
 +	dbglog("certificate verify depth: %d", depth);
 +
-+    if (auth_required && !ok) {
++	if (auth_required && !ok) {
 +		X509_NAME_oneline(X509_get_subject_name(peer_cert),
 +				  subject, 256);
 +
@@ -2065,7 +2130,7 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +		 */
 +		if (!ets->peer[0]) {
 +			warn("Peer name not specified: no check");
-+			return 1;
++			return ok;
 +		}
 +
 +		/*
@@ -2093,7 +2158,7 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +		}
 +	}
 +
-+	return 1;
++	return ok;
 +}
 +
 +/*
@@ -2142,7 +2207,7 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +	struct eaptls_session *ets = (struct eaptls_session *)arg;
 +	unsigned char code;
 +	const unsigned char*msg = buf;
-+    int hvers = msg[1] << 8 | msg[2];
++	int hvers = msg[1] << 8 | msg[2];
 +
 +	if(write_p)
 +		strcpy(string, " -> ");
@@ -2165,12 +2230,6 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +				break;
 +		case TLS1_2_VERSION:
 +				strcat(string, "TLS 1.2");
-+				break;
-+		case DTLS1_VERSION:
-+				strcat(string, "DTLS 1.0");
-+				break;
-+		case DTLS1_2_VERSION:
-+				strcat(string, "DTLS 1.2");
 +				break;
 +		default:
 +			strcat(string, "Unknown version");
@@ -2235,9 +2294,25 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +				strcat(string,"Client Key Exchange");
 +				break;
 +			case SSL3_MT_FINISHED:
-+				strcat(string,"Finished");
++				strcat(string,"Finished: ");
++				hvers = SSL_version(ssl);
++				switch(hvers) {
++				case SSL3_VERSION:
++						strcat(string, "SSL 3.0");
++						break;
++				case TLS1_VERSION:
++						strcat(string, "TLS 1.0");
++						break;
++				case TLS1_1_VERSION:
++						strcat(string, "TLS 1.1");
++						break;
++				case TLS1_2_VERSION:
++						strcat(string, "TLS 1.2");
++						break;
++				default:
++					strcat(string, "Unknown version");
++				}
 +				break;
-+
 +			default:
 +				sprintf( string, "Handshake: Unknown SSL3 code received: %d", code );
 +		}
@@ -2255,9 +2330,9 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.c
 +		dbglog("%s", string);
 +}
 +
-diff -Naur ppp-2.4.7/pppd/eap-tls.h ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.h
+diff -Naur ppp-2.4.7/pppd/eap-tls.h ppp-2.4.7-eaptls-mppe-1.102/pppd/eap-tls.h
 --- ppp-2.4.7/pppd/eap-tls.h	1970-01-01 01:00:00.000000000 +0100
-+++ ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.h	2018-06-02 01:42:04.023165433 +0200
++++ ppp-2.4.7-eaptls-mppe-1.102/pppd/eap-tls.h	2018-10-30 16:47:59.534263383 +0100
 @@ -0,0 +1,107 @@
 +/*
 + * eap-tls.h
@@ -2366,9 +2441,9 @@ diff -Naur ppp-2.4.7/pppd/eap-tls.h ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap-tls.h
 +#endif
 +
 +#endif
-diff -Naur ppp-2.4.7/pppd/eap.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap.c
+diff -Naur ppp-2.4.7/pppd/eap.c ppp-2.4.7-eaptls-mppe-1.102/pppd/eap.c
 --- ppp-2.4.7/pppd/eap.c	2014-08-09 14:31:39.000000000 +0200
-+++ ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap.c	2018-06-02 01:42:04.023165433 +0200
++++ ppp-2.4.7-eaptls-mppe-1.102/pppd/eap.c	2018-10-30 16:47:59.537263209 +0100
 @@ -43,6 +43,11 @@
   * Based on draft-ietf-pppext-eap-srp-03.txt.
   */
@@ -2972,9 +3047,9 @@ diff -Naur ppp-2.4.7/pppd/eap.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap.c
  	return (inp - pstart);
  }
 +
-diff -Naur ppp-2.4.7/pppd/eap.h ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap.h
+diff -Naur ppp-2.4.7/pppd/eap.h ppp-2.4.7-eaptls-mppe-1.102/pppd/eap.h
 --- ppp-2.4.7/pppd/eap.h	2014-08-09 14:31:39.000000000 +0200
-+++ ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap.h	2018-06-02 01:42:04.023165433 +0200
++++ ppp-2.4.7-eaptls-mppe-1.102/pppd/eap.h	2018-10-30 16:47:59.537263209 +0100
 @@ -84,6 +84,16 @@
  	eapClosed,	/* Authentication not in use */
  	eapListen,	/* Client ready (and timer running) */
@@ -3043,9 +3118,9 @@ diff -Naur ppp-2.4.7/pppd/eap.h ppp-2.4.7-eaptls-mppe-1.101b/pppd/eap.h
  #define	EAP_DEFREQTIME		20	/* Time to wait for peer request */
  #define	EAP_DEFALLOWREQ		20	/* max # times to accept requests */
  
-diff -Naur ppp-2.4.7/pppd/md5.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/md5.c
+diff -Naur ppp-2.4.7/pppd/md5.c ppp-2.4.7-eaptls-mppe-1.102/pppd/md5.c
 --- ppp-2.4.7/pppd/md5.c	2014-08-09 14:31:39.000000000 +0200
-+++ ppp-2.4.7-eaptls-mppe-1.101b/pppd/md5.c	2018-06-02 01:42:04.023165433 +0200
++++ ppp-2.4.7-eaptls-mppe-1.102/pppd/md5.c	2018-10-30 16:47:59.538263156 +0100
 @@ -33,6 +33,8 @@
   ***********************************************************************
   */
@@ -3061,9 +3136,9 @@ diff -Naur ppp-2.4.7/pppd/md5.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/md5.c
   */
 +#endif /* USE_EAPTLS */
 +
-diff -Naur ppp-2.4.7/pppd/md5.h ppp-2.4.7-eaptls-mppe-1.101b/pppd/md5.h
+diff -Naur ppp-2.4.7/pppd/md5.h ppp-2.4.7-eaptls-mppe-1.102/pppd/md5.h
 --- ppp-2.4.7/pppd/md5.h	2014-08-09 14:31:39.000000000 +0200
-+++ ppp-2.4.7-eaptls-mppe-1.101b/pppd/md5.h	2018-06-02 01:42:04.024165430 +0200
++++ ppp-2.4.7-eaptls-mppe-1.102/pppd/md5.h	2018-10-30 16:47:59.538263156 +0100
 @@ -36,6 +36,7 @@
   ** documentation and/or software.                                    **
   ***********************************************************************
@@ -3078,9 +3153,9 @@ diff -Naur ppp-2.4.7/pppd/md5.h ppp-2.4.7-eaptls-mppe-1.101b/pppd/md5.h
  #endif /* __MD5_INCLUDE__ */
 +
 +#endif /* USE_EAPTLS */
-diff -Naur ppp-2.4.7/pppd/pathnames.h ppp-2.4.7-eaptls-mppe-1.101b/pppd/pathnames.h
+diff -Naur ppp-2.4.7/pppd/pathnames.h ppp-2.4.7-eaptls-mppe-1.102/pppd/pathnames.h
 --- ppp-2.4.7/pppd/pathnames.h	2014-08-09 14:31:39.000000000 +0200
-+++ ppp-2.4.7-eaptls-mppe-1.101b/pppd/pathnames.h	2018-06-02 01:42:04.024165430 +0200
++++ ppp-2.4.7-eaptls-mppe-1.102/pppd/pathnames.h	2018-10-30 16:47:59.539263095 +0100
 @@ -21,6 +21,13 @@
  #define _PATH_UPAPFILE 	 _ROOT_PATH "/etc/ppp/pap-secrets"
  #define _PATH_CHAPFILE 	 _ROOT_PATH "/etc/ppp/chap-secrets"
@@ -3095,11 +3170,11 @@ diff -Naur ppp-2.4.7/pppd/pathnames.h ppp-2.4.7-eaptls-mppe-1.101b/pppd/pathname
  #define _PATH_SYSOPTIONS _ROOT_PATH "/etc/ppp/options"
  #define _PATH_IPUP	 _ROOT_PATH "/etc/ppp/ip-up"
  #define _PATH_IPDOWN	 _ROOT_PATH "/etc/ppp/ip-down"
-diff -Naur ppp-2.4.7/pppd/plugins/Makefile.linux ppp-2.4.7-eaptls-mppe-1.101b/pppd/plugins/Makefile.linux
+diff -Naur ppp-2.4.7/pppd/plugins/Makefile.linux ppp-2.4.7-eaptls-mppe-1.102/pppd/plugins/Makefile.linux
 --- ppp-2.4.7/pppd/plugins/Makefile.linux	2014-08-09 14:31:39.000000000 +0200
-+++ ppp-2.4.7-eaptls-mppe-1.101b/pppd/plugins/Makefile.linux	2018-06-02 01:42:04.024165430 +0200
++++ ppp-2.4.7-eaptls-mppe-1.102/pppd/plugins/Makefile.linux	2018-10-30 16:47:59.539263095 +0100
 @@ -4,6 +4,9 @@
- LDFLAGS	= -shared
+ LDFLAGS_SHARED	= -shared
  INSTALL	= install
  
 +# EAP-TLS
@@ -3108,9 +3183,9 @@ diff -Naur ppp-2.4.7/pppd/plugins/Makefile.linux ppp-2.4.7-eaptls-mppe-1.101b/pp
  DESTDIR = $(INSTROOT)@DESTDIR@
  BINDIR = $(DESTDIR)/sbin
  MANDIR = $(DESTDIR)/share/man/man8
-diff -Naur ppp-2.4.7/pppd/plugins/passprompt.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/plugins/passprompt.c
+diff -Naur ppp-2.4.7/pppd/plugins/passprompt.c ppp-2.4.7-eaptls-mppe-1.102/pppd/plugins/passprompt.c
 --- ppp-2.4.7/pppd/plugins/passprompt.c	2014-08-09 14:31:39.000000000 +0200
-+++ ppp-2.4.7-eaptls-mppe-1.101b/pppd/plugins/passprompt.c	2018-06-02 01:42:04.024165430 +0200
++++ ppp-2.4.7-eaptls-mppe-1.102/pppd/plugins/passprompt.c	2018-10-30 16:47:59.540263023 +0100
 @@ -107,4 +107,7 @@
  {
      add_options(options);
@@ -3119,9 +3194,9 @@ diff -Naur ppp-2.4.7/pppd/plugins/passprompt.c ppp-2.4.7-eaptls-mppe-1.101b/pppd
 +    eaptls_passwd_hook = promptpass;
 +#endif
  }
-diff -Naur ppp-2.4.7/pppd/plugins/passwordfd.c ppp-2.4.7-eaptls-mppe-1.101b/pppd/plugins/passwordfd.c
+diff -Naur ppp-2.4.7/pppd/plugins/passwordfd.c ppp-2.4.7-eaptls-mppe-1.102/pppd/plugins/passwordfd.c
 --- ppp-2.4.7/pppd/plugins/passwordfd.c	2014-08-09 14:31:39.000000000 +0200
-+++ ppp-2.4.7-eaptls-mppe-1.101b/pppd/plugins/passwordfd.c	2018-06-02 01:42:04.024165430 +0200
++++ ppp-2.4.7-eaptls-mppe-1.102/pppd/plugins/passwordfd.c	2018-10-30 16:47:59.540263023 +0100
 @@ -79,4 +79,8 @@
  
      chap_check_hook = pwfd_check;
@@ -3131,9 +3206,9 @@ diff -Naur ppp-2.4.7/pppd/plugins/passwordfd.c ppp-2.4.7-eaptls-mppe-1.101b/pppd
 +    eaptls_passwd_hook = pwfd_passwd;
 +#endif
  }
-diff -Naur ppp-2.4.7/pppd/pppd.8 ppp-2.4.7-eaptls-mppe-1.101b/pppd/pppd.8
+diff -Naur ppp-2.4.7/pppd/pppd.8 ppp-2.4.7-eaptls-mppe-1.102/pppd/pppd.8
 --- ppp-2.4.7/pppd/pppd.8	2014-08-09 14:31:39.000000000 +0200
-+++ ppp-2.4.7-eaptls-mppe-1.101b/pppd/pppd.8	2018-06-02 01:42:04.025165427 +0200
++++ ppp-2.4.7-eaptls-mppe-1.102/pppd/pppd.8	2018-10-30 16:47:59.542262870 +0100
 @@ -248,6 +248,12 @@
  compression in the corresponding direction.  Use \fInobsdcomp\fR or
  \fIbsdcomp 0\fR to disable BSD-Compress compression entirely.
@@ -3202,9 +3277,9 @@ diff -Naur ppp-2.4.7/pppd/pppd.8 ppp-2.4.7-eaptls-mppe-1.101b/pppd/pppd.8
  .B noauth
  Do not require the peer to authenticate itself.  This option is
  privileged.
-diff -Naur ppp-2.4.7/pppd/pppd.h ppp-2.4.7-eaptls-mppe-1.101b/pppd/pppd.h
+diff -Naur ppp-2.4.7/pppd/pppd.h ppp-2.4.7-eaptls-mppe-1.102/pppd/pppd.h
 --- ppp-2.4.7/pppd/pppd.h	2014-08-09 14:31:39.000000000 +0200
-+++ ppp-2.4.7-eaptls-mppe-1.101b/pppd/pppd.h	2018-06-02 01:42:04.025165427 +0200
++++ ppp-2.4.7-eaptls-mppe-1.102/pppd/pppd.h	2018-10-30 16:47:59.542262870 +0100
 @@ -325,6 +325,11 @@
  extern bool	dryrun;		/* check everything, print options, exit */
  extern int	child_wait;	/* # seconds to wait for children at end */
