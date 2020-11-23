@@ -1,6 +1,6 @@
 Name:           ppp
 Version:        2.4.8
-Release:        1 
+Release:        2 
 Summary:        The Point-to-Point Protocol
 
 License:        BSD and LGPLv2+ and GPLv2+ and Public Domain
@@ -55,7 +55,9 @@ Patch0023:      0023-build-sys-install-rp-pppoe-plugin-files-with-standar.patch
 Patch0024:      0024-build-sys-install-pppoatm-plugin-files-with-standard.patch
 Patch0025:      ppp-2.4.8-pppd-install-pppd-binary-using-standard-perms-755.patch
 Patch0026:      ppp-2.4.8-eaptls-mppe-1.102.patch
-
+%ifarch riscv64
+Patch0027:      0027-Set-LIBDIR-for-RISCV.patch
+%endif
 Patch6000:      ppp-CVE-2015-3310.patch
 Patch6001:      ppp-CVE-2020-8597.patch
 
@@ -156,6 +158,12 @@ mkdir -p %{buildroot}%{_rundir}/lock/ppp
 %{_mandir}/man8/*.8.gz
 
 %changelog
+* Tue Nov 10 2020 whoisxxx <zhangxuzhou4@huawei.com> - 2.4.8-2
+- Type: bugfix
+- ID: NA
+- SUG: NA
+- DESC:Set LIBDIR for RISC-V
+
 * Tue Jun 30 2020 yuboyun <yuboyun@huawei.com> - 2.4.8-1
 - Type:bugfix
 - ID:NA

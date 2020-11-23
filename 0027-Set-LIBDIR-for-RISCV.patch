@@ -1,0 +1,101 @@
+From 05cf58cd46b3c92e868d856931b0ee5d2bfc7d72 Mon Sep 17 00:00:00 2001
+From: whoisxxx <zhangxuzhou4@huawei.com>
+Date: Tue, 10 Nov 2020 02:47:11 +0000
+Subject: [PATCH] Set LIBDIR for riscv
+
+The LIBDIR is given by "$(CC) -print-os-multi-directory", which
+result in "../lib64" on X86/aarch64 host, and "./" on an openEuler
+RISC-V host. Here is a temproray apporach by hardcore it for
+an RISC-V host.
+
+Signed-off-by: whoisxxx <zhangxuzhou4@huawei.com>
+---
+ pppd/Makefile.linux                  | 2 +-
+ pppd/plugins/Makefile.linux          | 2 +-
+ pppd/plugins/pppoatm/Makefile.linux  | 2 +-
+ pppd/plugins/pppol2tp/Makefile.linux | 2 +-
+ pppd/plugins/radius/Makefile.linux   | 2 +-
+ pppd/plugins/rp-pppoe/Makefile.linux | 2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/pppd/Makefile.linux b/pppd/Makefile.linux
+index c1cf794..da8718d 100644
+--- a/pppd/Makefile.linux
++++ b/pppd/Makefile.linux
+@@ -8,7 +8,7 @@ DESTDIR = $(INSTROOT)@DESTDIR@
+ BINDIR = $(DESTDIR)/sbin
+ MANDIR = $(DESTDIR)/share/man/man8
+ INCDIR = $(DESTDIR)/include
+-LIBDIR = $(DESTDIR)/lib/$(shell gcc -print-multi-os-directory 2> /dev/null)
++LIBDIR = $(DESTDIR)/lib64
+ 
+ TARGETS = pppd
+ 
+diff --git a/pppd/plugins/Makefile.linux b/pppd/plugins/Makefile.linux
+index cf73fa9..0ed5168 100644
+--- a/pppd/plugins/Makefile.linux
++++ b/pppd/plugins/Makefile.linux
+@@ -10,7 +10,7 @@ CFLAGS += -DUSE_EAPTLS=1
+ DESTDIR = $(INSTROOT)@DESTDIR@
+ BINDIR = $(DESTDIR)/sbin
+ MANDIR = $(DESTDIR)/share/man/man8
+-LIBDIR = $(DESTDIR)/lib/$(shell $(CC) -print-multi-os-directory 2> /dev/null)/pppd/$(VERSION)
++LIBDIR = $(DESTDIR)/lib64/pppd/$(VERSION)
+ 
+ SUBDIRS := rp-pppoe pppoatm pppol2tp
+ # Uncomment the next line to include the radius authentication plugin
+diff --git a/pppd/plugins/pppoatm/Makefile.linux b/pppd/plugins/pppoatm/Makefile.linux
+index 1961e0e..a538eef 100644
+--- a/pppd/plugins/pppoatm/Makefile.linux
++++ b/pppd/plugins/pppoatm/Makefile.linux
+@@ -7,7 +7,7 @@ INSTALL	= install
+ #***********************************************************************
+ 
+ DESTDIR = $(INSTROOT)@DESTDIR@
+-LIBDIR = $(DESTDIR)/lib/$(shell gcc -print-multi-os-directory 2> /dev/null)/pppd/$(VERSION)
++LIBDIR = $(DESTDIR)/lib64/pppd/$(VERSION)
+ 
+ VERSION = $(shell awk -F '"' '/VERSION/ { print $$2; }' ../../patchlevel.h)
+ 
+diff --git a/pppd/plugins/pppol2tp/Makefile.linux b/pppd/plugins/pppol2tp/Makefile.linux
+index 7b23b25..225a4a9 100644
+--- a/pppd/plugins/pppol2tp/Makefile.linux
++++ b/pppd/plugins/pppol2tp/Makefile.linux
+@@ -7,7 +7,7 @@ INSTALL	= install
+ #***********************************************************************
+ 
+ DESTDIR = $(INSTROOT)@DESTDIR@
+-LIBDIR = $(DESTDIR)/lib/$(shell gcc -print-multi-os-directory 2> /dev/null)/pppd/$(VERSION)
++LIBDIR = $(DESTDIR)/lib64/pppd/$(VERSION)
+ 
+ VERSION = $(shell awk -F '"' '/VERSION/ { print $$2; }' ../../patchlevel.h)
+ 
+diff --git a/pppd/plugins/radius/Makefile.linux b/pppd/plugins/radius/Makefile.linux
+index 2150332..ff0e8f3 100644
+--- a/pppd/plugins/radius/Makefile.linux
++++ b/pppd/plugins/radius/Makefile.linux
+@@ -5,7 +5,7 @@
+ 
+ DESTDIR = $(INSTROOT)@DESTDIR@
+ MANDIR = $(DESTDIR)/share/man/man8
+-LIBDIR = $(DESTDIR)/lib/$(shell gcc -print-multi-os-directory 2> /dev/null)/pppd/$(VERSION)
++LIBDIR = $(DESTDIR)/lib64/pppd/$(VERSION)
+ 
+ VERSION = $(shell awk -F '"' '/VERSION/ { print $$2; }' ../../patchlevel.h)
+ 
+diff --git a/pppd/plugins/rp-pppoe/Makefile.linux b/pppd/plugins/rp-pppoe/Makefile.linux
+index 5f79284..bd95832 100644
+--- a/pppd/plugins/rp-pppoe/Makefile.linux
++++ b/pppd/plugins/rp-pppoe/Makefile.linux
+@@ -17,7 +17,7 @@
+ DESTDIR = $(INSTROOT)@DESTDIR@
+ BINDIR = $(DESTDIR)/sbin
+ MANDIR = $(DESTDIR)/share/man/man8
+-LIBDIR = $(DESTDIR)/lib/$(shell gcc -print-multi-os-directory 2> /dev/null)/pppd/$(PPPDVERSION)
++LIBDIR = $(DESTDIR)/lib64/pppd/$(PPPDVERSION)
+ 
+ PPPDVERSION = $(shell awk -F '"' '/VERSION/ { print $$2; }' ../../patchlevel.h)
+ 
+-- 
+2.23.0
+
