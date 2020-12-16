@@ -1,12 +1,11 @@
 Name:           ppp
 Version:        2.4.8
-Release:        2 
+Release:        3 
 Summary:        The Point-to-Point Protocol
 
 License:        BSD and LGPLv2+ and GPLv2+ and Public Domain
 URL:            https://ppp.samba.org/
 Source0:        https://download.samba.org/pub/ppp/%{name}-%{version}.tar.gz
-# Source1-12 are from fedora29
 Source1:        ppp-watch.tar.xz
 Source2:        ip-down
 Source3:        ip-down.ipv6to4
@@ -29,7 +28,6 @@ Requires(pre):  /usr/sbin/groupadd
 Provides:       network-scripts-ppp
 Obsoletes:      network-scripts-ppp
 
-# Patch0001-Patch0028 are from Fedora29
 Patch0001:      0001-build-sys-use-gcc-as-our-compiler-of-choice.patch
 Patch0002:      ppp-2.4.8-build-sys-enable-PAM-support.patch
 Patch0003:      ppp-2.4.8-build-sys-utilize-compiler-flags-handed-to-us-by-rpm.patch
@@ -158,6 +156,12 @@ mkdir -p %{buildroot}%{_rundir}/lock/ppp
 %{_mandir}/man8/*.8.gz
 
 %changelog
+* Tue Dec 15 2020 xihaochen <xihaochen@huawei.com> - 2.4.8-3
+- Type:requirement
+- ID:NA
+- SUG:NA
+- DESC:remove sensitive words 
+
 * Tue Nov 10 2020 whoisxxx <zhangxuzhou4@huawei.com> - 2.4.8-2
 - Type: bugfix
 - ID: NA
