@@ -1,6 +1,6 @@
 Name:           ppp
 Version:        2.4.9
-Release:        1
+Release:        2
 Summary:        The Point-to-Point Protocol
 
 License:        BSD and LGPLv2+ and GPLv2+ and Public Domain
@@ -141,6 +141,9 @@ mkdir -p %{buildroot}%{_rundir}/lock/ppp
 %{_mandir}/man8/*.8.gz
 
 %changelog
+* Thu Apr 7 2022 gym369 <gym487@163.com> - 2.4.9-2
+- Upgrade Patch for RISC-V
+
 * Mon Mar 28 2022 xihaochen <xihaochen@h-partners.com> - 2.4.9-1
 - Type:requirement
 - ID:NA
