@@ -1,6 +1,6 @@
 Name:           ppp
 Version:        2.4.8
-Release:        1 
+Release:        2
 Summary:        The Point-to-Point Protocol
 
 License:        BSD and LGPLv2+ and GPLv2+ and Public Domain
@@ -21,7 +21,6 @@ Source11:       ppp-logrotate.conf
 Source12:       ppp-tmpfiles.conf
 
 BuildRequires:  gcc glib2-devel libpcap-devel openssl-devel pam-devel systemd systemd-devel
-BuildRequires:  ppp
 Requires:       libpcap >= 14:0.8.3-6 glibc >= 2.0.6 systemd /etc/pam.d/system-auth network-scripts
 Supplements:    (network-scripts)
 Requires(pre):  /usr/bin/getent
@@ -100,7 +99,6 @@ export RPM_OPT_FLAGS="$RPM_OPT_FLAGS -fPIC -Wall -fno-strict-aliasing" RPM_LD_FL
 make install INSTROOT=$RPM_BUILD_ROOT install-etcppp 
 find scripts -type f | xargs chmod a-x
 make install ROOT=$RPM_BUILD_ROOT -C ppp-watch
-cp -a %{_libdir}/pppd/2.4.7   %{buildroot}%{_libdir}/pppd/
 mkdir -p %{buildroot}%{_sysconfdir}/ppp
 mkdir -p %{buildroot}%{_sysconfdir}/sysconfig/network-scripts
 mkdir -p %{buildroot}%{_localstatedir}/log/ppp
@@ -140,7 +138,6 @@ mkdir -p %{buildroot}%{_rundir}/lock/ppp
 %config(noreplace) %{_sysconfdir}/logrotate.d/ppp
 %{_prefix}/lib/tmpfiles.d/*.conf
 %{_libdir}/pppd/%{version}/*.so
-%{_libdir}/pppd/2.4.7
 %{_sbindir}/chat
 %{_sbindir}/ppp*
 %ghost %dir %{_rundir}/ppp
@@ -156,6 +153,12 @@ mkdir -p %{buildroot}%{_rundir}/lock/ppp
 %{_mandir}/man8/*.8.gz
 
 %changelog
+* Tue Sep 06 2022 gaihuiying <eaglegai@163.com> - 2.4.8-2
+- Type:bugfix
+- ID:NA
+- SUG:NA
+- DESC:delete useless files
+
 * Tue Aug 25 2020 gaihuiying <gaihuiying1@huawei.com> - 2.4.8-1
 - Type:bugfix
 - ID:NA
