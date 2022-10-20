@@ -1,6 +1,6 @@
 Name:           ppp
 Version:        2.4.8
-Release:        2
+Release:        3
 Summary:        The Point-to-Point Protocol
 
 License:        BSD and LGPLv2+ and GPLv2+ and Public Domain
@@ -55,8 +55,9 @@ Patch0024:      0024-build-sys-install-pppoatm-plugin-files-with-standard.patch
 Patch0025:      ppp-2.4.8-pppd-install-pppd-binary-using-standard-perms-755.patch
 Patch0026:      ppp-2.4.8-eaptls-mppe-1.102.patch
 
-Patch6000:      ppp-CVE-2015-3310.patch
-Patch6001:      ppp-CVE-2020-8597.patch
+Patch0027:      ppp-CVE-2015-3310.patch
+Patch0028:      ppp-CVE-2020-8597.patch
+Patch0029:      backport-pppd-Negotiate-IP-address-when-only-peer-addresses-are-provided.patch
 
 %description
 The Point-to-Point Protocol (PPP) provides a standard way to establish
@@ -153,6 +154,12 @@ mkdir -p %{buildroot}%{_rundir}/lock/ppp
 %{_mandir}/man8/*.8.gz
 
 %changelog
+* Wed Oct 19 2022 gaihuiying <eaglegai@163.com> - 2.4.8-3
+- Type:bugfix
+- ID:NA
+- SUG:NA
+- DESC:pppd: Negotiate IP address when only peer addresses are provided
+
 * Tue Sep 06 2022 gaihuiying <eaglegai@163.com> - 2.4.8-2
 - Type:bugfix
 - ID:NA
