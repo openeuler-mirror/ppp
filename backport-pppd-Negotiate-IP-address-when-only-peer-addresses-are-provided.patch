@@ -1,0 +1,86 @@
+From a2094eba2406392a7bb69b436155e2d08ea555e8 Mon Sep 17 00:00:00 2001
+From: pali <7141871+pali@users.noreply.github.com>
+Date: Tue, 26 Jan 2021 03:55:25 +0100
+Subject: [PATCH] pppd: Negotiate IP address when only peer addresses are
+ provided (#236)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+This fixes special case when both ppp ends are configured to send only IP
+address of other side and do not send its own IP address. Such setup is
+correct because both ends can exchange its IP addresses and therefore they
+have full information, they known both local and remote address.
+
+This issue can be triggered by calling pppd with arguments:
+
+    ./pppd debug local noauth nolock nodetach asyncmap 0 default-asyncmap novj noaccomp nopcomp nodeflate nobsdcomp nomagic noipv6 noipdefault nosendip :10.0.0.1 pty "./pppd debug local noauth nolock nodetach asyncmap 0 default-asyncmap novj noaccomp nopcomp nodeflate nobsdcomp nomagic noipv6 nosendip nodefaultroute :10.0.0.2 notty"
+
+Without this patch IP addresses are not exchanges at all and pppd fails:
+
+    rcvd [LCP ConfReq id=0x1]
+    sent [LCP ConfReq id=0x1]
+    sent [LCP ConfAck id=0x1]
+    rcvd [LCP ConfAck id=0x1]
+    sent [LCP EchoReq id=0x0 magic=0x0]
+    sent [IPCP ConfReq id=0x1]
+    rcvd [LCP EchoReq id=0x0 magic=0x0]
+    sent [LCP EchoRep id=0x0 magic=0x0]
+    rcvd [IPCP ConfReq id=0x1]
+    sent [IPCP ConfAck id=0x1]
+    rcvd [LCP EchoRep id=0x0 magic=0x0]
+    rcvd [IPCP ConfAck id=0x1]
+    Could not determine local IP address
+
+After applying this patch exchanging of IP addresses is working fine:
+
+    rcvd [LCP ConfReq id=0x1]
+    sent [LCP ConfReq id=0x1]
+    sent [LCP ConfAck id=0x1]
+    rcvd [LCP ConfAck id=0x1]
+    sent [LCP EchoReq id=0x0 magic=0x0]
+    sent [IPCP ConfReq id=0x1]
+    rcvd [LCP EchoReq id=0x0 magic=0x0]
+    sent [LCP EchoRep id=0x0 magic=0x0]
+    rcvd [IPCP ConfReq id=0x1]
+    sent [IPCP ConfNak id=0x1 <addr 10.0.0.1>]
+    rcvd [LCP EchoRep id=0x0 magic=0x0]
+    rcvd [IPCP ConfNak id=0x1 <addr 10.0.0.2>]
+    sent [IPCP ConfReq id=0x2 <addr 10.0.0.2>]
+    rcvd [IPCP ConfReq id=0x2 <addr 10.0.0.1>]
+    sent [IPCP ConfAck id=0x2 <addr 10.0.0.1>]
+    rcvd [IPCP ConfAck id=0x2 <addr 10.0.0.2>]
+    local  IP address 10.0.0.2
+    remote IP address 10.0.0.1
+
+Signed-off-by: Pali Rohár <pali@kernel.org>
+---
+ pppd/ipcp.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/pppd/ipcp.c b/pppd/ipcp.c
+index fcf17b1e..d17dbd28 100644
+--- a/pppd/ipcp.c
++++ b/pppd/ipcp.c
+@@ -678,8 +678,9 @@ ipcp_resetci(fsm *f)
+     ipcp_options *go = &ipcp_gotoptions[f->unit];
+     ipcp_options *ao = &ipcp_allowoptions[f->unit];
+ 
+-    wo->req_addr = (wo->neg_addr || wo->old_addrs) &&
+-	(ao->neg_addr || ao->old_addrs);
++    wo->req_addr = ((wo->neg_addr || wo->old_addrs) &&
++	(ao->neg_addr || ao->old_addrs)) ||
++	(wo->hisaddr && !wo->accept_remote);
+     if (wo->ouraddr == 0)
+ 	wo->accept_local = 1;
+     if (wo->hisaddr == 0)
+@@ -1648,7 +1649,8 @@ ipcp_reqci(fsm *f, u_char *inp,	int *len, int reject_if_disagree)
+      * option safely.
+      */
+     if (rc != CONFREJ && !ho->neg_addr && !ho->old_addrs &&
+-	wo->req_addr && !reject_if_disagree && !noremoteip) {
++	wo->req_addr && !reject_if_disagree &&
++	((wo->hisaddr && !wo->accept_remote) || !noremoteip)) {
+ 	if (rc == CONFACK) {
+ 	    rc = CONFNAK;
+ 	    ucp = inp;			/* reset pointer */
