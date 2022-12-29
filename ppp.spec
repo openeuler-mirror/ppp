@@ -1,6 +1,6 @@
 Name:           ppp
 Version:        2.4.9
-Release:        2
+Release:        3
 Summary:        The Point-to-Point Protocol
 
 License:        BSD and LGPLv2+ and GPLv2+ and Public Domain
@@ -47,6 +47,7 @@ Patch0016:      backport-ppp-2.4.9-configure-cflags-allow-commas.patch
 Patch0017:      backport-0027-Set-LIBDIR-for-RISCV.patch
 %endif
 Patch0018:      backport-pppd-Negotiate-IP-address-when-only-peer-addresses-are-provided.patch
+Patch0019:      backport-CVE-2022-4603.patch
 
 %description
 The Point-to-Point Protocol (PPP) provides a standard way to establish
@@ -142,6 +143,12 @@ mkdir -p %{buildroot}%{_rundir}/lock/ppp
 %{_mandir}/man8/*.8.gz
 
 %changelog
+* Thu Dec 29 2022 gaihuiying <eaglegai@163.com> - 2.4.9-3
+- Type:cves
+- ID:NA
+- SUG:NA
+- DESC:fix CVE-2022-4603
+
 * Wed Oct 19 2022 gaihuiying <eaglegai@163.com> - 2.4.9-2
 - Type:bufix
 - ID:NA
