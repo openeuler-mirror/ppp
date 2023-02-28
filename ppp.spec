@@ -1,6 +1,6 @@
 Name:           ppp
 Version:        2.4.9
-Release:        3
+Release:        4
 Summary:        The Point-to-Point Protocol
 
 License:        BSD and LGPLv2+ and GPLv2+ and Public Domain
@@ -43,9 +43,7 @@ Patch0013:      backport-0023-build-sys-install-rp-pppoe-plugin-files-with-stand
 Patch0014:      backport-0024-build-sys-install-pppoatm-plugin-files-with-standard.patch
 Patch0015:      backport-ppp-2.4.8-pppd-install-pppd-binary-using-standard-perms-755.patch
 Patch0016:      backport-ppp-2.4.9-configure-cflags-allow-commas.patch
-%ifarch riscv64 
-Patch0017:      0027-Set-LIBDIR-for-RISCV.patch
-%endif
+Patch0017:      backport-0027-Set-LIBDIR-for-RISCV.patch
 Patch0018:      backport-pppd-Negotiate-IP-address-when-only-peer-addresses-are-provided.patch
 Patch0019:      backport-CVE-2022-4603.patch
 
@@ -143,6 +141,12 @@ mkdir -p %{buildroot}%{_rundir}/lock/ppp
 %{_mandir}/man8/*.8.gz
 
 %changelog
+* Tue Feb 28 2023 laokz <zhangkai@iscas.ac.cn> - 2.4.9-4
+- Type:bugfix
+- ID:NA
+- SUG:NA
+- DESC:fix patch0017 for riscv64
+
 * Thu Dec 29 2022 gaihuiying <eaglegai@163.com> - 2.4.9-3
 - Type:cves
 - ID:NA
