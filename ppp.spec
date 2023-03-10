@@ -1,6 +1,6 @@
 Name:           ppp
 Version:        2.4.8
-Release:        4
+Release:        5
 Summary:        The Point-to-Point Protocol
 
 License:        BSD and LGPLv2+ and GPLv2+ and Public Domain
@@ -59,6 +59,7 @@ Patch0027:      ppp-CVE-2015-3310.patch
 Patch0028:      ppp-CVE-2020-8597.patch
 Patch0029:      backport-pppd-Negotiate-IP-address-when-only-peer-addresses-are-provided.patch
 Patch0030:      backport-CVE-2022-4603.patch
+Patch0031:      add-fclose-operation-to-fix-file-pointer-not-closed.patch
 
 %description
 The Point-to-Point Protocol (PPP) provides a standard way to establish
@@ -155,6 +156,12 @@ mkdir -p %{buildroot}%{_rundir}/lock/ppp
 %{_mandir}/man8/*.8.gz
 
 %changelog
+* Fri Mar 10 2023 xingwei <xingwei14@h-partners.com> - 2.4.8-5
+- Type:bufix
+- ID:NA
+- SUG:NA
+- DESC:add fclose operation to fix file pointer not closed after use
+
 * Thu Dec 29 2022 gaihuiying <eaglegai@163.com> - 2.4.8-4
 - Type:cves
 - ID:NA
